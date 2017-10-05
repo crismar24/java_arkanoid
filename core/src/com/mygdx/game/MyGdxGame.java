@@ -10,18 +10,18 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MyGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
-	Texture img, brk;                                                   //
+	Texture img;
+	Brick brk;
 	Vector2 position = new Vector2(0, 0);
 	Vector2 speed = new Vector2(0, 0);
 	Vector2 maxPosition = new Vector2(0,0);
-	Vector2 brickPosition = new Vector2(400, 200);                //
-	Vector2 oldPos = new Vector2(0,0);                            //
+	Vector2 oldPos = new Vector2(0,0);
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("ball.png");
-		brk = new Texture("brick.png"); //
+		brk = new Brick("brick.png", 200, 200);
 		maxPosition.y = Gdx.graphics.getHeight() - img.getHeight();
 		maxPosition.x = Gdx.graphics.getWidth() - img.getWidth();
 	}
@@ -43,23 +43,17 @@ public class MyGdxGame extends ApplicationAdapter {
 		if (speed.y != 0) { position.y = position.y + 2 * speed.y; }
 		if (speed.x > 7) speed.x = 7; //
 		if (speed.y > 7) speed.y = 7; //
-		if (position.x < 0) { speed.x = -speed.x; position.x = 0; }             //
-		if (position.y < 0) { speed.y = -speed.y; position.y = 0; }             //
-		if (position.x > maxPosition.x - img.getWidth())  { speed.x = -speed.x; position.x = maxPosition.x - img.getWidth();  } //
-		if (position.y > maxPosition.y - img.getHeight()) { speed.y = -speed.y; position.y = maxPosition.y - img.getHeight(); } //
+		if (position.x < 0) { speed.x = -speed.x; position.x = 0; }
+		if (position.y < 0) { speed.y = -speed.y; position.y = 0; }
+		if (position.x > maxPosition.x - img.getWidth())  { speed.x = -speed.x; position.x = maxPosition.x - img.getWidth();  }
+		if (position.y > maxPosition.y - img.getHeight()) { speed.y = -speed.y; position.y = maxPosition.y - img.getHeight(); }
 
-		// condition detection
-		if (       (position.x                   < brickPosition.x + brk.getWidth()   )  // левая сторона img должна быть слева от правой стороны brk
-				&& (position.x + img.getWidth()  > brickPosition.x                    )  // правая сторона img должна быть справа от левой стороны brk
-				&& (position.y                   < brickPosition.y + brk.getHeight()  )  // верхняя сторона img должна быть сверху от нижней стороны brk
-				&& (position.y + img.getHeight() > brickPosition.y                    )) // нижняя сторона img должна быть снизу от верхней стороны brk
-		{
+		// collision detection and reaction
+		if (brk.isCollision(position, img)) {
 			oldPos.set(position.x - 2 * speed.x, position.y - 2 * speed.y);
-			// horizontal collision
-			if ((oldPos.x < brickPosition.x + brk.getWidth()) && (oldPos.x + img.getWidth() > brickPosition.x)) { speed.y = - speed.y; }
+			if (brk.isCollisionHorizontal(oldPos, img)) speed.y = -speed.y;
 			else
-			// vertical collision
-			if ((oldPos.y  < brickPosition.y + brk.getHeight()) && (oldPos.y + img.getHeight() > brickPosition.y)) { speed.x = - speed.x; }
+			if (brk.isCollisionVertical(position, img)) speed.x = -speed.x;
 			else {
 				speed.x = - speed.x;
 				speed.y = - speed.y;
@@ -72,7 +66,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		// render
 		batch.begin();
 		batch.draw(img, position.x, position.y);
-		batch.draw(brk, brickPosition.x, brickPosition.y);
+		brk.render(batch);
 		batch.end();
 	}
 
