@@ -41,4 +41,7 @@ public class Brick {
         else return false;
     }
 
+    public void dispose () {
+        img.dispose();
+    }
 }
