@@ -29,14 +29,14 @@ public class Brick {
 
     public boolean isCollisionHorizontal(Vector2 ballOldPosition, Texture ballImg) {
         if (       (ballOldPosition.x                  < pos.x + img.getWidth())
-                && (ballOldPosition.x + img.getWidth() > pos.x))
+                && (ballOldPosition.x + ballImg.getWidth() > pos.x))
             return true;
         else return false;
     }
 
     public boolean isCollisionVertical (Vector2 ballOldPosition, Texture ballImg) {
         if (       (ballOldPosition.y                   < pos.y + img.getHeight())
-                && (ballOldPosition.y + img.getHeight() > pos.y))
+                && (ballOldPosition.y + ballImg.getHeight() > pos.y))
             return true;
         else return false;
     }
