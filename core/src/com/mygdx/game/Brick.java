@@ -1,16 +1,17 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class Brick {
 
-    Texture img;
+    public Texture img;
     public Vector2 pos;
 
     public Brick (String imgFileName, int x, int y) {
-        img = new Texture(imgFileName);
+        img = new Texture(Gdx.files.internal(imgFileName));
         pos = new Vector2(x, y);
     }
 
